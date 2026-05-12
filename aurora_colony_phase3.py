@@ -189,3 +189,45 @@ def exibir_previsoes():
     for hora in [20, 22, 0, 2, 4]:
         consumo_prev = prever_consumo_por_hora(hora)
         print(f"     {hora:02d}h -> {consumo_prev:.1f} kW estimados")
+
+
+# =============================================================================
+#  BLOCO 7 — PAINEL DE STATUS E EXECUÇÃO PRINCIPAL
+# =============================================================================
+
+def exibir_painel():
+    print("\n" + "=" * 52)
+    print("  AURORA SIGER — PAINEL DE CONTROLE DA COLONIA")
+    print("=" * 52)
+
+    amb = colonia["ambiental"]
+    print("\n  [AMBIENTE]")
+    print(f"  Temperatura interna : {amb['temperatura_interna_c']:.1f} C")
+    print(f"  Temperatura externa : {amb['temperatura_externa_c']:.1f} C")
+    print(f"  Vento               : {amb['vento_kmh']:.1f} km/h")
+
+    e = colonia["energetico"]
+    print("\n  [ENERGIA]")
+    print(f"  Solar    : {e['solar']['geracao_kw']:.1f} kW  [{e['solar']['status']}]")
+    print(f"  Eolico   : {e['eolico']['geracao_kw']:.1f} kW  [{e['eolico']['status']}]")
+    print(f"  Baterias : {e['baterias']['carga_pct']:.1f}%   [{e['baterias']['status']}]")
+
+    print("\n  [MODULOS OPERACIONAIS]")
+    print(f"  {'Nome':<26} {'Consumo':>8}  {'Prior.':>6}  Status")
+    print(f"  {'-'*26} {'-'*8}  {'-'*6}  ------")
+    for mod in colonia["operacional"]["modulos"]:
+        print(
+            f"  {mod['nome']:<26} {mod['consumo_kw']:>6.1f} kW"
+            f"  {mod['prioridade']:>6}  {mod['status']}"
+        )
+
+
+if __name__ == "__main__":
+    exibir_painel()
+    analisar_energia()
+    exibir_previsoes()
+    tomar_decisao()
+
+    print("\n" + "=" * 52)
+    print("  Ciclo de analise concluido. Colonia estavel.")
+    print("=" * 52)
