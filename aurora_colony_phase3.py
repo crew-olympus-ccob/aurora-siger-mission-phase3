@@ -164,3 +164,28 @@ def tomar_decisao():
 
     else:
         print("  [OK] Todos os sistemas operando dentro dos parametros normais.")
+
+
+# =============================================================================
+#  BLOCO 6 — PREVISÕES
+# =============================================================================
+
+def exibir_previsoes():
+    vento_atual      = colonia["ambiental"]["vento_kmh"]
+    energia_prevista = prever_energia_eolica(vento_atual)
+
+    a_eol, b_eol = regressao_linear(historico_vento_kmh, historico_energia_eolica)
+    a_con, b_con = regressao_linear(historico_hora_do_dia, historico_consumo_kw)
+
+    print("\n" + "-" * 52)
+    print("  PREVISOES (Regressao Linear)")
+    print("-" * 52)
+    print(f"  Modelo eolico  : energia = {a_eol:.3f} * vento + ({b_eol:.3f})")
+    print(f"  Vento atual    : {vento_atual:.1f} km/h")
+    print(f"  Energia prevista: {energia_prevista:.1f} kW")
+
+    print(f"\n  Modelo consumo : consumo = {a_con:.3f} * hora + ({b_con:.3f})")
+    print("  Previsao de consumo nas proximas horas:")
+    for hora in [20, 22, 0, 2, 4]:
+        consumo_prev = prever_consumo_por_hora(hora)
+        print(f"     {hora:02d}h -> {consumo_prev:.1f} kW estimados")
