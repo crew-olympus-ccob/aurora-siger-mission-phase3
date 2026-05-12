@@ -31,3 +31,26 @@ colonia = {
         ]
     }
 }
+
+# =============================================================================
+#  BLOCO 2 — FUNÇÕES AUXILIARES
+# =============================================================================
+
+def calcular_geracao_total():
+    e = colonia["energetico"]
+    return e["solar"]["geracao_kw"] + e["eolico"]["geracao_kw"]
+
+
+def calcular_consumo_total():
+    total = 0.0
+    for mod in colonia["operacional"]["modulos"]:
+        if mod["status"] != "DESLIGADO":
+            total += mod["consumo_kw"]
+    return total
+
+
+def obter_estado_energia():
+    geracao = calcular_geracao_total()
+    consumo = calcular_consumo_total()
+    carga   = colonia["energetico"]["baterias"]["carga_pct"]
+    return geracao, consumo, carga
