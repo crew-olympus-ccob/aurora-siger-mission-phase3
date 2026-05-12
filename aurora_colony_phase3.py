@@ -123,3 +123,44 @@ def analisar_energia():
         print("\n  [SUGESTAO] Baterias cheias. Considerar reducao de geracao.")
     else:
         print("\n  [OK] Balanco energetico estavel.")
+
+
+# =============================================================================
+#  BLOCO 5 — MOTOR DE DECISÃO AUTOMATIZADO
+# =============================================================================
+
+def tomar_decisao():
+    geracao, consumo, carga = obter_estado_energia()
+    modulos = colonia["operacional"]["modulos"]
+
+    print("\n" + "-" * 52)
+    print("  DECISOES OPERACIONAIS")
+    print("-" * 52)
+
+    if carga < 30.0 and consumo > geracao:
+        print("  [EMERGENCIA] Modo de emergencia ativado!")
+        print("  -> Desligando modulos nao essenciais (prioridade < 3):")
+        for mod in modulos:
+            if mod["prioridade"] < 3 and mod["status"] != "DESLIGADO":
+                mod["status"] = "DESLIGADO"
+                print(f"     DESLIGADO: {mod['nome']}")
+        print("  -> Suporte Medico, Geracao de Energia e Habitacao mantidos.")
+
+    elif consumo > geracao:
+        print("  [ALERTA] Modo economia ativado.")
+        print("  -> Reduzindo 30% do consumo dos modulos de baixa prioridade:")
+        for mod in modulos:
+            if mod["prioridade"] <= 2 and mod["status"] == "OK":
+                mod["consumo_kw"] = round(mod["consumo_kw"] * 0.7, 2)
+                print(f"     REDUZIDO: {mod['nome']} -> {mod['consumo_kw']:.1f} kW")
+
+    elif carga < 50.0:
+        print("  [AVISO] Baterias abaixo de 50%.")
+        print("  -> Priorizando recarga. Operacao normal mantida.")
+
+    elif geracao - consumo > 20.0:
+        print("  [OK] Excedente de geracao detectado.")
+        print("  -> Redirecionando excedente para recarga das baterias.")
+
+    else:
+        print("  [OK] Todos os sistemas operando dentro dos parametros normais.")
