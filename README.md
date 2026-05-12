@@ -15,6 +15,7 @@ Sistema computacional autônomo desenvolvido para gerenciar a operação contín
 | Bloco | Função |
 |---|---|
 | Estrutura de dados | Organização hierárquica da colônia em dicionários e listas |
+| Funções auxiliares | Cálculo de geração, consumo e estado de energia da colônia |
 | Análise de energia | Comparação entre geração, consumo e carga das baterias |
 | Previsões | Regressão linear simples para estimar energia eólica e consumo futuro |
 | Motor de decisão | Regras automáticas com priorização de sistemas essenciais |
