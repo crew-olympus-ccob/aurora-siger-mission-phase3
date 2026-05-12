@@ -79,8 +79,8 @@ def regressao_linear(xs, ys):
     n       = len(xs)
     soma_x  = sum(xs)
     soma_y  = sum(ys)
-    soma_xy = sum(xs[i] * ys[i] for i in range(n))
-    soma_x2 = sum(x ** 2 for x in xs)
+    soma_xy = sum(xs[i] * ys[i] for i in range(n)) # produto cruzado x*y
+    soma_x2 = sum(x ** 2 for x in xs)              # quadrado de x
 
     a = (n * soma_xy - soma_x * soma_y) / (n * soma_x2 - soma_x ** 2)
     b = (soma_y - a * soma_x) / n
@@ -132,6 +132,9 @@ def analisar_energia():
 def tomar_decisao():
     geracao, consumo, carga = obter_estado_energia()
     modulos = colonia["operacional"]["modulos"]
+
+    # prioridade >= 3: essenciais (Suporte Medico, Energia, Habitacao) — nunca desligados
+    # prioridade  < 3: nao essenciais (Laboratorio, Logistica) — candidatos ao corte
 
     print("\n" + "-" * 52)
     print("  DECISOES OPERACIONAIS")
