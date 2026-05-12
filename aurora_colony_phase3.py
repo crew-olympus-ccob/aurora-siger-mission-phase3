@@ -95,3 +95,31 @@ def prever_energia_eolica(vento_kmh):
 def prever_consumo_por_hora(hora):
     a, b = regressao_linear(historico_hora_do_dia, historico_consumo_kw)
     return max(0.0, round(a * hora + b, 2))
+
+
+# =============================================================================
+#  BLOCO 4 — ANÁLISE DE ENERGIA
+# =============================================================================
+
+def analisar_energia():
+    geracao, consumo, carga = obter_estado_energia()
+    saldo = geracao - consumo
+
+    print("\n" + "-" * 52)
+    print("  ANALISE DE ENERGIA")
+    print("-" * 52)
+    print(f"  Geracao total  : {geracao:.1f} kW")
+    print(f"  Consumo total  : {consumo:.1f} kW")
+    print(f"  Saldo          : {saldo:+.1f} kW")
+    print(f"  Carga baterias : {carga:.1f}%")
+
+    if consumo > geracao and carga < 30.0:
+        print("\n  [ALERTA CRITICO] Consumo acima da geracao E baterias criticas.")
+    elif consumo > geracao:
+        print("\n  [ALERTA] Consumo maior que geracao. Usando reserva das baterias.")
+    elif saldo > 0 and carga < 90.0:
+        print("\n  [SUGESTAO] Excedente disponivel. Carregar baterias.")
+    elif saldo > 0 and carga >= 90.0:
+        print("\n  [SUGESTAO] Baterias cheias. Considerar reducao de geracao.")
+    else:
+        print("\n  [OK] Balanco energetico estavel.")
