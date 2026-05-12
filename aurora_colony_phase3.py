@@ -32,6 +32,7 @@ colonia = {
     }
 }
 
+
 # =============================================================================
 #  BLOCO 2 — FUNÇÕES AUXILIARES
 # =============================================================================
@@ -54,3 +55,43 @@ def obter_estado_energia():
     consumo = calcular_consumo_total()
     carga   = colonia["energetico"]["baterias"]["carga_pct"]
     return geracao, consumo, carga
+
+
+# =============================================================================
+#  BLOCO 3 — REGRESSÃO LINEAR SIMPLES (sem bibliotecas externas)
+#
+#  Fórmula:
+#       a = (n·Σxy − Σx·Σy) / (n·Σx² − (Σx)²)
+#       b = (Σy − a·Σx) / n
+#       y_estimado = a*x + b
+# =============================================================================
+
+# Histórico de sensores: vento (km/h) × energia eólica gerada (kW)
+historico_vento_kmh      = [round(random.uniform(5.0, 25.0), 1) for _ in range(7)]
+historico_energia_eolica = [round(v * 0.65 + random.uniform(-1.0, 1.0), 1) for v in historico_vento_kmh]
+
+# Histórico de consumo ao longo do dia (hora × kW total consumido)
+historico_hora_do_dia = [6, 8, 10, 12, 14, 16, 18]
+historico_consumo_kw  = [round(random.uniform(25.0, 35.0) + h * 0.8, 1) for h in historico_hora_do_dia]
+
+
+def regressao_linear(xs, ys):
+    n       = len(xs)
+    soma_x  = sum(xs)
+    soma_y  = sum(ys)
+    soma_xy = sum(xs[i] * ys[i] for i in range(n))
+    soma_x2 = sum(x ** 2 for x in xs)
+
+    a = (n * soma_xy - soma_x * soma_y) / (n * soma_x2 - soma_x ** 2)
+    b = (soma_y - a * soma_x) / n
+    return a, b
+
+
+def prever_energia_eolica(vento_kmh):
+    a, b = regressao_linear(historico_vento_kmh, historico_energia_eolica)
+    return max(0.0, round(a * vento_kmh + b, 2))
+
+
+def prever_consumo_por_hora(hora):
+    a, b = regressao_linear(historico_hora_do_dia, historico_consumo_kw)
+    return max(0.0, round(a * hora + b, 2))
